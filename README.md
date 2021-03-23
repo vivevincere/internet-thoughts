@@ -8,6 +8,7 @@
 
 ```
 ./install.sh
+source .env/bin/activate
 ```
 
 ## Adding packages
