@@ -1,5 +1,6 @@
 from google.cloud import language_v1
 from enum import Enum
+import youtube_api
 
 SENTIMENT = Enum("SENTIMENT", "positive negative mixed neutral")
 SENTIMENT_THRESHOLD = { SENTIMENT.positive: 0.25, SENTIMENT.negative: -0.25} # need to tune
@@ -10,11 +11,15 @@ NEUTRAL_THRESHOLD = 1.0 # if magnitude above threshold, considered "mixed" inste
 def analyze_sentiment_list(text_list: list()) -> dict():
     counts = dict.fromkeys([e.name for e in SENTIMENT], 0)
     total_score = 0.0
-    length = float(len(text_list))
+    length = 0
     for text in text_list:
-        sentiment = analyze_sentiment(text)
+        try:
+            sentiment = analyze_sentiment(text)
+        except:
+            continue
         counts[get_sentiment(sentiment).name] += 1
         total_score += get_sentiment_score(sentiment)
+        length += 1
     return { "counts" : counts, "average" : total_score / length }
 
 def analyze_sentiment(text_content: str) -> dict():
@@ -64,7 +69,6 @@ def analyze_sentiment(text_content: str) -> dict():
 
 
 def get_sentiment_score(res: tuple()) -> float:
-    print(res.get(SENTIMENT_SCORE, None))
     return res.get(SENTIMENT_SCORE, None)
 
 def get_sentiment_magnitude(res: dict()) -> float:
@@ -82,4 +86,10 @@ def get_sentiment(res: tuple()) -> SENTIMENT:
     else:
         return SENTIMENT.neutral
 
-#print(analyze_sentiment_list(["Hello world", "Hello world"]))
+# str_list = list(map(lambda x: x[1], youtube_api.getCommentsFromVideos("BTS", 5, 100, "en")))
+# str1 = ""
+# for string in str_list:
+#     str1 += string
+# print(str1)
+# print((list(map(lambda x: x[1], youtube_api.getCommentsFromVideos("BTS", 5, 100, "en")))).join('\n'))
+# print(analyze_sentiment_list([str1]))

@@ -114,4 +114,4 @@ def getMostLiked(comments, topCommentCount):
 
 #comments = getCommentThread("uQYLGiuQqpA",1000)
 #print(getMostLiked(comments, 20))
-#print(getCommentsFromVideos("BTS", 5, 100, "en"))
+print(getCommentsFromVideos("BTS", 5, 100, "en"))
