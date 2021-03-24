@@ -1,6 +1,6 @@
 import praw
 
-reddit = praw.Reddit("internet_thoughts")
+reddit = praw.Reddit("internet_thoughts") 
 
 
 def search_reddit(query, limit=1000):
