@@ -1,0 +1,26 @@
+{
+  "name": "internet-thoughts",
+  "version": "1.0.0",
+  "description": "## Prerequisites",
+  "main": "index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vivevincere/internet-thoughts.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vivevincere/internet-thoughts/issues"
+  },
+  "homepage": "https://github.com/vivevincere/internet-thoughts#readme",
+  "devDependencies": {
+    "husky": "^5.2.0"
+  }
+}
