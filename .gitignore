@@ -2,3 +2,9 @@
 __pycache__
 praw.ini
 node_modules
+
+# API Keys
+gkey.json
+
+# mac
+.DS_store
