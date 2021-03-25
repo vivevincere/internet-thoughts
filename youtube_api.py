@@ -36,8 +36,9 @@ def searchForVideos(searchTerm, language,numberOfVideos):
 
 		response = request.execute()
 		if 'nextPageToken' in response:
-
 			nextToken = response['nextPageToken']
+		else:
+			break
 		for parentVideo in response['items']:
 			thelist.append(parentVideo['id']['videoId'])
 		numberOfVideos -= curNum
@@ -69,6 +70,8 @@ def getCommentThread(videoID, numberOfComments):
 
 		if 'nextPageToken' in response:
 			nextToken = response['nextPageToken']
+		else:
+			break
 		for parentComment in response['items']:
 			unit = []
 			unit.append(parentComment['snippet']['topLevelComment']['snippet']['likeCount'])
@@ -116,8 +119,4 @@ def getMostLiked(comments, topCommentCount):
 
 #comments = getCommentThread("uQYLGiuQqpA",1000)
 #print(getMostLiked(comments, 20))
-<<<<<<< HEAD:youtube-api.py
-print(getCommentsFromVideos("BTS", 1, 10, "en"))
-=======
-# print(getCommentsFromVideos("BTS", 5, 100, "en"))
->>>>>>> 74418288abcfbac62711a8834a79001145eafd6f:youtube_api.py
+#print(getCommentsFromVideos("BTS", 1, 10, "en"))
