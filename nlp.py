@@ -7,6 +7,16 @@ SENTIMENT_SCORE = "sentiment_score" # score range: normalized -1 to 1
 SENTIMENT_MAGNITUDE = "sentiment_magnitude" # magnitude range: 0 to inf
 NEUTRAL_THRESHOLD = 1.0 # if magnitude above threshold, considered "mixed" instead of "neutral"
 
+def analyze_sentiment_list(text_list: list()) -> dict():
+    counts = dict.fromkeys([e.name for e in SENTIMENT], 0)
+    total_score = 0.0
+    length = float(len(text_list))
+    for text in text_list:
+        sentiment = analyze_sentiment(text)
+        counts[get_sentiment(sentiment).name] += 1
+        total_score += get_sentiment_score(sentiment)
+    return { "counts" : counts, "average" : total_score / length }
+
 def analyze_sentiment(text_content: str) -> dict():
     """
     Analyzing Sentiment in a String
@@ -49,18 +59,16 @@ def analyze_sentiment(text_content: str) -> dict():
     # the language specified in the request or, if not specified,
     # the automatically-detected language.
     print(u"Language of the text: {}".format(response.language))
-    
-    # return { SENTIMENT_SCORE : response.document_sentiment.score, SENTIMENT_MAGNITUDE : response.document_sentiment.magnitude }
-    return (response.document_sentiment.score, response.document_sentiment.magnitude)
+    print({ SENTIMENT_SCORE : response.document_sentiment.score, SENTIMENT_MAGNITUDE : response.document_sentiment.magnitude })
+    return { SENTIMENT_SCORE : response.document_sentiment.score, SENTIMENT_MAGNITUDE : response.document_sentiment.magnitude }
 
 
 def get_sentiment_score(res: tuple()) -> float:
-    return res[0]
-    # return res.get(SENTIMENT_SCORE, None)
+    print(res.get(SENTIMENT_SCORE, None))
+    return res.get(SENTIMENT_SCORE, None)
 
 def get_sentiment_magnitude(res: dict()) -> float:
-    return res[1]
-    # return res.get(SENTIMENT_MAGNITUDE, None)
+    return res.get(SENTIMENT_MAGNITUDE, None)
 
 def get_sentiment(res: tuple()) -> SENTIMENT:
     score = get_sentiment_score(res)
@@ -73,3 +81,5 @@ def get_sentiment(res: tuple()) -> SENTIMENT:
         return SENTIMENT.mixed
     else:
         return SENTIMENT.neutral
+
+#print(analyze_sentiment_list(["Hello world", "Hello world"]))
