@@ -29,7 +29,7 @@ type Public_Metrics struct {
 	Quote_Count   int `json:"quote_count"`
 }
 
-func twitterCall(searchTerm string, location string, numberOfTweets int) []TwitterMain {
+func TwitterCall(searchTerm string, location string, numberOfTweets int) []TwitterMain {
 
 	var retList []TwitterMain
 	client := &http.Client{}
