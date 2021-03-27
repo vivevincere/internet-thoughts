@@ -1,10 +1,14 @@
 .env
 __pycache__
-praw.ini
 node_modules
 
 # API Keys
 gkey.json
+reddit.json
+praw.ini
 
 # mac
 .DS_store
+
+# vscode
+.vscode
