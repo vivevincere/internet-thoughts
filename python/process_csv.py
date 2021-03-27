@@ -1,23 +1,24 @@
 import pandas as pd
 
 all_categories = ["trust", "pessimism", "love", "surprise", "fear", "joy", "disgust", "sadness", "anticipation", "optimism", "anger"]
-categories = ["pessimism", "love", "surprise", "fear", "joy", "disgust", "sadness", "optimism", "anger"]
+categories = ["surprise", "fear", "joy", "disgust", "sadness", "anger"]
 # ordered by least to most frequently appearing - to maintain size when stripping duplicates
 
 def process_csv(filepath: str) -> None:
     data = pd.read_csv(filepath)
+    drop_col = [col for col in all_categories if col not in categories]
+    data.drop(drop_col, axis=1, inplace=True)
     for cat in categories:
-        split_df = data[data[cat] == 1]["Tweet"]
-        split_df = split_df.to_frame()
-        split_df["label"] = cat
-        split_df.to_csv("./data/" + cat + ".csv", index=False)
-    newdata = pd.DataFrame()
-    for cat in categories:
-        path = "./data/" + cat + ".csv"
-        data = pd.read_csv(path)
-        newdata = pd.concat([data, newdata])
-    newdata.drop_duplicates(subset=['Tweet'], keep='first', inplace=True)
-    newdata.to_csv("./data/all.csv", index=False)
+        d = {1: cat, 0: 'None'}
+        data[cat] = data[cat].map(d)
+    data["label"] = data[categories].agg(','.join, axis=1)
+    categories.append("ID")
+    data.drop(categories, axis=1, inplace=True)
+    data["label"] = [row.replace("None,","") for row in data["label"]]
+    data["label"] = [row.replace("None","") for row in data["label"]]
+    data.replace("", float("NaN"), inplace=True)
+    data.dropna(axis=0, inplace=True, subset=["label"])
+    data.to_csv("./data/all.csv", index=False)
 
 
 
