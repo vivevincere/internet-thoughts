@@ -11,6 +11,10 @@ import(
 
 
 
+type Word_Cloud struct {
+	Word  string `json:"word"`
+	Count int    `json:"count"`
+}
 
 func WordCloud(words string) [30][]string{
 	err := os.Remove("python/wordcloud.txt")

@@ -6,6 +6,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"internet-thoughts/sentiment"
+	"sort"
 )
 
 type TwitterMain struct {
@@ -28,6 +30,8 @@ type Public_Metrics struct {
 	Like_Count    int `json:"like_count"`
 	Quote_Count   int `json:"quote_count"`
 }
+
+
 
 func TwitterCall(searchTerm string, location string, numberOfTweets int) []TwitterMain {
 
@@ -57,4 +61,22 @@ func TwitterCall(searchTerm string, location string, numberOfTweets int) []Twitt
 
 	}
 	return retList
+}
+
+func Twitter_Most(data_arr []Data,n int) []sentiment.Buzz{
+	var x []sentiment.Buzz
+	sort.Slice(data_arr, func(i, j int) bool {
+  return data_arr[i].Public_Metrics.Retweet_Count > data_arr[j].Public_Metrics.Retweet_Count
+})
+	for i:= 0;i < n; i++{
+		var tmp sentiment.Buzz
+		tmp.Text = data_arr[i].Text
+		tmp.Comment_Count = data_arr[i].Public_Metrics.Reply_Count
+		tmp.Retweet_Count = data_arr[i].Public_Metrics.Retweet_Count
+		tmp.Upvote_Count = data_arr[i].Public_Metrics.Like_Count
+		tmp.Url = "twitter.com/anyuser/status/" + data_arr[i].Id
+		x = append(x, tmp)
+
+	}
+	return x
 }
