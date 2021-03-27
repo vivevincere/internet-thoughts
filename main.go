@@ -10,10 +10,11 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/gorilla/mux"
-	"internet-thoughts/python"
+	wordcloud "internet-thoughts/python"
 	"internet-thoughts/reddit"
 	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 type Sentiment_API struct {
@@ -25,26 +26,11 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 }
 
 type SentimentResponse struct {
-	Sentimeter          Sentimeter   `json:"sentimeter"`
-	Sentiment_Breakdown []Sentiment  `json:"sentiment_breakdown"`
-	Emotions            Emotions     `json:"emotions"`
-	Word_Cloud          []Word_Cloud `json:"word_cloud"`
-	Buzz_List           []Buzz       `json:"buzz_list"`
-}
-
-type Sentimeter struct {
-	TotalScore int `json:"total_score"`
-	ValidCount int `json:"valid_count"`
-}
-
-type Sentiment struct {
-	Name  string `json:"name"`
-	Value string `json:"value"`
-}
-
-type Emotions struct {
-	ValidCount        int         `json:"valid_count"`
-	Emotion_Breakdown []Sentiment `json:"breakdown"`
+	Sentimeter          sentiment.Sentimeter  `json:"sentimeter"`
+	Sentiment_Breakdown []sentiment.Sentiment `json:"sentiment_breakdown"`
+	Emotions            sentiment.Emotions    `json:"emotions"`
+	Word_Cloud          []Word_Cloud          `json:"word_cloud"`
+	Buzz_List           []Buzz                `json:"buzz_List"`
 }
 
 type Word_Cloud struct {
@@ -97,7 +83,7 @@ func sentiment_search(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Send to sentiment
-	//sentiment.CheckSentiment(docs)
+	// sentiment.CheckSentiment(docs)
 
 	//wordCloud
 	fullString := strings.Join(docs, "")
