@@ -1,5 +1,5 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-pip freeze > requirements.txt
-git add requirements.txt
+pip freeze > python/requirements.txt
+git add python/requirements.txt
