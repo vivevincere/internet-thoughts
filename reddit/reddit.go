@@ -19,10 +19,66 @@ type Auth struct {
 }
 
 type RedditData struct {
-	Body     string
-	Id       string
-	Ups      int
-	Children []RedditEntity
+	Body      string
+	Id        string
+	Ups       int
+	Author    string
+	Permalink string
+	Replies   interface{} `json:"replies"`
+	Children  []RedditEntity
+}
+
+type RedditReplies struct {
+	Count int
+}
+
+func (rr *RedditReplies) UnmarshalJson(b []byte) error {
+	var reply interface{}
+	json.Unmarshal(b, &reply)
+
+	rep, ok := reply.(map[string]interface{})
+	if !ok {
+		return nil
+	}
+	data, ok := rep["data"]
+	if !ok {
+		return nil
+	}
+	dat, ok := data.(map[string]interface{})
+	if !ok {
+		return nil
+	}
+
+	children, ok := dat["children"]
+	if !ok {
+		return nil
+	}
+
+	arr, ok := children.([]interface{})
+	if !ok {
+		return nil
+	}
+
+	child, ok := arr[0].(map[string]interface{})
+	if !ok {
+		return nil
+	}
+	data, ok = child["data"]
+	if !ok {
+		log.Println("3")
+		return nil
+	}
+
+	dc, ok := data.(map[string]interface{})
+	if !ok {
+		return nil
+	}
+	float, ok := dc["count"].(float64)
+	if !ok {
+		return nil
+	}
+	rr.Count = int(float)
+	return nil
 }
 
 type RedditEntity struct {
@@ -31,8 +87,11 @@ type RedditEntity struct {
 }
 
 type Comment struct {
-	Ups  int
-	Body string
+	Ups          int
+	Body         string
+	RepliesCount int
+	UserHandle   string
+	CommentLink  string
 }
 
 type RedditCreds struct {
@@ -48,6 +107,7 @@ func main() {
 	print(comms)
 }
 
+// TODO: tune the number of submissions searched and number of comments searched for each subreddit
 func GetReddit(query string) []Comment {
 	creds, err := getRedditCreds()
 	if err != nil {
@@ -71,7 +131,6 @@ func GetReddit(query string) []Comment {
 	c := make(chan int)
 
 	for _, submission := range submissions {
-		// print(submission)
 		go func(submission string) {
 			client_new := &http.Client{}
 			req, err := http.NewRequest("GET", fmt.Sprintf("https://oauth.reddit.com/comments/%s", submission), nil)
@@ -205,7 +264,17 @@ func getCommentsFromSubmission(resp *http.Response) []Comment {
 		if child.Kind != "t1" { // t1 represents comments
 			continue
 		}
-		comments = append(comments, Comment{child.Data.Ups, child.Data.Body})
+		// count := 0
+		replyBytes, _ := json.Marshal(child.Data.Replies)
+		reply := &RedditReplies{}
+		err = reply.UnmarshalJson(replyBytes)
+		if err != nil {
+			fmt.Println(err)
+		}
+		count := reply.Count
+		link := fmt.Sprintf("https://reddit.com%s", child.Data.Permalink)
+
+		comments = append(comments, Comment{child.Data.Ups, child.Data.Body, count, child.Data.Author, link})
 	}
 	return comments
 }

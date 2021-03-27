@@ -19,11 +19,11 @@ type Meta struct {
 type Data struct {
 	Id             string           `json:"id"`
 	Text           string           `json:"text"`
-	Public_Metrics Public_Metrics `json:"public_metrics"`
+	Public_Metrics []Public_Metrics `json:"public_metrics"`
 }
 
 type Public_Metrics struct {
-	Retweet_Count int `json:"retweet_count`
+	Retweet_Count int `json:"retweet_count"`
 	Reply_Count   int `json:"reply_count"`
 	Like_Count    int `json:"like_count"`
 	Quote_Count   int `json:"quote_count"`
