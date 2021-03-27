@@ -12,24 +12,23 @@ import(
 
 
 
-func wordCloud(words string) [6][]string{
-	err := os.Remove("wordcloud.txt")
+func WordCloud(words string) [30][]string{
+	err := os.Remove("python/wordcloud.txt")
 	if err != nil{
 		fmt.Println("remove file failed")
 	}
-    err = ioutil.WriteFile("wordcloud.txt", []byte(words), 0644)
+    err = ioutil.WriteFile("python/wordcloud.txt", []byte(words), 0644)
     if err != nil{
 		fmt.Println("write to file failed")
 	}
-    cmd := exec.Command(".env/bin/python3","wordcloud.py")
+    cmd := exec.Command("python/envstuff/bin/python3","python/wordcloud.py")
     out, err := cmd.Output()
     if err != nil{
 		fmt.Println(err)
 	}
-	var toRet [6][]string
-
+	var toRet [30][]string
 	values := strings.Split(string(out), "\n")
-    for i:= 0; i <6; i++{
+    for i:= 0; i <30; i++{
     	wordCount := strings.Split(values[i]," ")
     	toRet[i] = wordCount
     }
