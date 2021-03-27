@@ -21,6 +21,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"internet-thoughts/utils"
 	"log"
 	"os"
 	"strings"
@@ -47,14 +48,13 @@ const (
 	Positive sentimentClass = iota
 	Negative
 	Mixed
-	Neutral
 )
 
 func (s sentimentClass) String() string {
-	return [...]string{"Positive", "Negative", "Mixed", "Neutral"}[s]
+	return [...]string{"Positive", "Negative", "Mixed"}[s]
 }
 
-func CheckSentiment(docs []string) {
+func CheckSentiment(docs []string) (Sentimeter, []Sentiment) {
 	// if len(os.Args) < 2 {
 	// 	usage("Missing command.")
 	// }
@@ -67,34 +67,13 @@ func CheckSentiment(docs []string) {
 	}
 	// [END init]
 
-	// filename := os.Args[2]
-	// if filename == "" {
-	// 	usage("Missing text.")
-	// }
+	sentimeter, sentimentMap := analyzeMultipleSentiments(ctx, client, docs)
 
-	// docs := readFile(filename)
-	// docsAndUpvotes := reddit.GetReddit("bts")
-	// docs := make([]string, 0)
-	// for _, doc := range docsAndUpvotes {
-	// 	docs = append(docs, doc.Body)
-	// }
-
-	analyzeMultipleSentiments(ctx, client, docs)
-
-	// switch os.Args[1] {
-	// case "entities":
-	// 	printResp(analyzeEntities(ctx, client, text))
-	// case "sentiment":
-	// 	printResp(analyzeSentiment(ctx, client, text))
-	// case "syntax":
-	// 	printResp(analyzeSyntax(ctx, client, text))
-	// // case "entitysentiment":
-	// // 	printResp(analyzeEntitySentiment(ctx, betaClient(), text))
-	// case "classify":
-	// 	printResp(classifyText(ctx, client, text))
-	// default:
-	// 	usage("Unknown command.")
-	// }
+	sentiments := make([]Sentiment, 0)
+	for sentiClass, score := range sentimentMap {
+		sentiments = append(sentiments, Sentiment{sentiClass, score})
+	}
+	return sentimeter, sentiments
 }
 
 func usage(msg string) {
@@ -175,18 +154,19 @@ func printResp(v proto.Message, err error) {
 	proto.MarshalText(os.Stdout, v)
 }
 
-func analyzeMultipleSentiments(ctx context.Context, client *language.Client, docs []string) {
-	var totScore float32
+func analyzeMultipleSentiments(ctx context.Context, client *language.Client, docs []string) (Sentimeter, map[string]int) {
+	totScore := float32(0.0)
+	totSucceed := 0
 
 	// var
 	sm := map[string]int{}
 	lock := sync.RWMutex{}
-	c := make(chan float32)
+	c := make(chan int)
 	count := 0
 	for _, doc := range docs {
 		go func(doc string) {
-			score := float32(0.0)
-			defer func() { c <- score }()
+			succeed := 0
+			defer func() { c <- succeed }()
 			count += 1
 			senti, err := analyzeSentiment(ctx, client, doc)
 			// print(senti.DocumentSentiment.Score)
@@ -197,16 +177,20 @@ func analyzeMultipleSentiments(ctx context.Context, client *language.Client, doc
 			score, class := getSentiment(senti.DocumentSentiment)
 			lock.Lock()
 			sm[class] += 1
+			totScore += score
 			lock.Unlock()
+			succeed = 1
 			// tot_score += score
 		}(doc)
 	}
 	// totScore = float32(0.0)
 	for i := 0; i < len(docs); i++ {
-		totScore += <-c
+		totSucceed += <-c
 	}
-	fmt.Printf("%+v", sm)
-	fmt.Printf("%.2f", totScore/float32(len(docs)))
+	// fmt.Printf("%+v", sm)
+	// fmt.Printf("%.2f", totScore/float32(len(docs)))
+
+	return Sentimeter{utils.Scale(totScore), totSucceed}, sm
 }
 
 func getSentiment(sentiment *languagepb.Sentiment) (score float32, class string) {
@@ -215,10 +199,8 @@ func getSentiment(sentiment *languagepb.Sentiment) (score float32, class string)
 		class = Positive.String()
 	} else if score < -SENTIMENT_THRESHOLD {
 		class = Negative.String()
-	} else if sentiment.Magnitude > NEUTRAL_THRESHOLD {
-		class = Mixed.String()
 	} else {
-		class = Neutral.String()
+		class = Mixed.String()
 	}
 	return
 }
