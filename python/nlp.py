@@ -1,3 +1,4 @@
+from google.cloud import automl
 from google.cloud import language_v1
 from enum import Enum
 import youtube_api
@@ -96,3 +97,27 @@ def get_sentiment(res: tuple()) -> SENTIMENT:
 # print(str1)
 # print((list(map(lambda x: x[1], youtube_api.getCommentsFromVideos("BTS", 5, 100, "en")))).join('\n'))
 # print(analyze_sentiment_list([str1]))
+
+# TODO(developer): Uncomment and set the following variables
+project_id = "648743058779"
+model_id = "TCN1595182464693698560"
+content = "BTS Jiminie Wishes Fans Good Day & Reminds Them to Not Skip Meals!"
+
+prediction_client = automl.PredictionServiceClient()
+
+# Get the full path of the model.
+model_full_id = automl.AutoMlClient.model_path(project_id, "us-central1", model_id)
+print(model_full_id)
+
+# Supported mime_types: 'text/plain', 'text/html'
+# https://cloud.google.com/automl/docs/reference/rpc/google.cloud.automl.v1#textsnippet
+text_snippet = automl.TextSnippet(content=content, mime_type="text/plain")
+payload = automl.ExamplePayload(text_snippet=text_snippet)
+
+response = prediction_client.predict(name=model_full_id, payload=payload)
+print(response)
+# for annotation_payload in response.payload:
+#     print(u"Predicted class name: {}".format(annotation_payload.display_name))
+#     print(
+#         u"Predicted class score: {}".format(annotation_payload.classification.score)
+#     )
