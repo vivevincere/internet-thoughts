@@ -289,8 +289,8 @@ func Related(searchTerm string) []string {
 		log.Fatal(err)
 	}
 
-	length := 7
-	if len(relT) < 7 {
+	length := 9
+	if len(relT) < 9 {
 		length = len(relT)
 	}
 	for i := 0; i < length; i++ {
@@ -298,7 +298,7 @@ func Related(searchTerm string) []string {
 			res = append(res, relT[i].Topic.Title)
 		}
 	}
-	if len(res) > 6 {
+	if len(res) > 8 {
 		res = res[:len(res)-1]
 	}
 	log.Println(res)
