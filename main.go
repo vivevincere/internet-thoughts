@@ -19,6 +19,8 @@ func homePage(w http.ResponseWriter, r *http.Request){
 	fmt.Println("TBD")
 }
 
+
+//Sentiment + emotion
 func sentiment_search(w http.ResponseWriter, r *http.Request){
 	var s Sentiment_API
 	responseData, _ := ioutil.ReadAll(r.Body)
@@ -43,10 +45,17 @@ func sentiment_search(w http.ResponseWriter, r *http.Request){
 	//TODO Word Cloud
 
 	w.WriteHeader(http.StatusOK)
-
 	json.NewEncoder(w).Encode(twitterData)
 
 }
+
+
+//TODO related searches
+
+
+//TODO wordCloud
+// returns variable number of words + their values
+
 
 
 func main(){

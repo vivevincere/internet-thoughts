@@ -19,7 +19,7 @@ type Meta struct {
 type Data struct {
 	Id             string           `json:"id"`
 	Text           string           `json:"text"`
-	Public_Metrics []Public_Metrics `json:"public_metrics"`
+	Public_Metrics Public_Metrics `json:"public_metrics"`
 }
 
 type Public_Metrics struct {
