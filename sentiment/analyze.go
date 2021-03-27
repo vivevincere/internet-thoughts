@@ -23,9 +23,11 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 	"sync"
 
 	"github.com/golang/protobuf/proto"
+	"github.com/groovili/gogtrends"
 
 	// [START imports]
 	language "cloud.google.com/go/language/apiv1"
@@ -261,4 +263,45 @@ func readFile(name string) []string {
 		log.Fatal(err)
 	}
 	return lines
+}
+
+func Related(searchTerm string) []string {
+	res := make([]string, 0)
+	ctx := context.Background()
+	explore, err := gogtrends.Explore(ctx,
+		&gogtrends.ExploreRequest{
+			ComparisonItems: []*gogtrends.ComparisonItem{
+				{
+					Keyword: searchTerm,
+					Geo:     "US",
+					Time:    "today 12-m",
+				},
+			},
+			Category: 0, // all categories
+			Property: "",
+		}, "EN")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	relT, err := gogtrends.Related(ctx, explore[2], "EN")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	length := 7
+	if len(relT) < 7 {
+		length = len(relT)
+	}
+	for i := 0; i < length; i++ {
+		if strings.ToUpper(relT[i].Topic.Title) != strings.ToUpper(searchTerm) {
+			res = append(res, relT[i].Topic.Title)
+		}
+	}
+	if len(res) > 6 {
+		res = res[:len(res)-1]
+	}
+	log.Println(res)
+
+	return res
 }
