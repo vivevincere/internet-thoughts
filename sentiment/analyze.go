@@ -14,7 +14,7 @@
 
 // Command analyze performs sentiment, entity, entity sentiment, and syntax analysis
 // on a string of text via the Cloud Natural Language API.
-package main
+package sentiment
 
 import (
 	"bufio"
@@ -30,9 +30,7 @@ import (
 	// [START imports]
 	language "cloud.google.com/go/language/apiv1"
 	languagepb "google.golang.org/genproto/googleapis/cloud/language/v1"
-
 	// [END imports]
-	"internet-thoughts/reddit"
 )
 
 var SENTIMENT_THRESHOLD = float32(0.25) // todo: tune this param
@@ -54,7 +52,7 @@ func (s sentimentClass) String() string {
 	return [...]string{"Positive", "Negative", "Mixed", "Neutral"}[s]
 }
 
-func main() {
+func CheckSentiment(docs []string) {
 	// if len(os.Args) < 2 {
 	// 	usage("Missing command.")
 	// }
@@ -73,11 +71,11 @@ func main() {
 	// }
 
 	// docs := readFile(filename)
-	docsAndUpvotes := reddit.GetReddit("bts")
-	docs := make([]string, 0)
-	for _, doc := range docsAndUpvotes {
-		docs = append(docs, doc.Body)
-	}
+	// docsAndUpvotes := reddit.GetReddit("bts")
+	// docs := make([]string, 0)
+	// for _, doc := range docsAndUpvotes {
+	// 	docs = append(docs, doc.Body)
+	// }
 
 	analyzeMultipleSentiments(ctx, client, docs)
 
