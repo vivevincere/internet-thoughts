@@ -3,10 +3,12 @@ package reddit
 import (
 	"encoding/json"
 	"fmt"
+	"internet-thoughts/sentiment"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
+	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -277,4 +279,23 @@ func getCommentsFromSubmission(resp *http.Response) []Comment {
 		comments = append(comments, Comment{child.Data.Ups, child.Data.Body, count, child.Data.Author, link})
 	}
 	return comments
+}
+
+func Reddit_Most(comments []Comment, n int) []sentiment.Buzz {
+	var x []sentiment.Buzz
+	sort.Slice(comments, func(i, j int) bool {
+		return comments[i].Ups > comments[j].Ups
+	})
+	for i := 0; i < n; i++ {
+		var tmp sentiment.Buzz
+		tmp.Text = comments[i].Body
+		tmp.Comment_Count = comments[i].RepliesCount
+		// tmp.Retweet_Count = comments[i].Public_Metrics.Retweet_Count
+		tmp.Upvote_Count = comments[i].Ups
+		tmp.Url = comments[i].CommentLink
+		tmp.User = comments[i].UserHandle
+		x = append(x, tmp)
+
+	}
+	return x
 }

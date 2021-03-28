@@ -26,4 +26,5 @@ type Buzz struct {
 	Retweet_Count int    `json:"retweet_count"`
 	Upvote_Count  int    `json:"upvote_count"`
 	Url           string `json:"url"`
+	User          string `json:"user"`
 }
