@@ -43,8 +43,14 @@ type TrendingResponse struct {
 //Sentiment + emotion
 func sentiment_search_twitter(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Accept, Access-Control-Allow-Origin")
+
+	log.Printf("%+v", w.Header())
+	if r.Method == "OPTIONS" {
+		return
+	}
 
 	var s Sentiment_API
 
@@ -128,8 +134,14 @@ func sentiment_search_twitter(w http.ResponseWriter, r *http.Request) {
 
 func sentiment_search_reddit(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Accept, Access-Control-Allow-Origin")
+
+	log.Printf("%+v", w.Header())
+	if r.Method == "OPTIONS" {
+		return
+	}
 
 	var s Sentiment_API
 
@@ -204,8 +216,14 @@ func sentiment_search_reddit(w http.ResponseWriter, r *http.Request) {
 
 func trending_search(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Accept, Access-Control-Allow-Origin")
+
+	log.Printf("%+v", w.Header())
+	if r.Method == "OPTIONS" {
+		return
+	}
 
 	var s Sentiment_API
 	responseData, err := ioutil.ReadAll(r.Body)
