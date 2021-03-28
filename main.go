@@ -47,12 +47,18 @@ func sentiment_search_twitter(w http.ResponseWriter, r *http.Request) {
 	responseData, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, err.Error(), 400)
+		return
 	}
 	err = json.Unmarshal(responseData, &s)
 	if err != nil {
 		http.Error(w, err.Error(), 400)
+		return
 	}
 	search_term := s.Search_Term
+	if search_term == "" {
+		http.Error(w, "No search term key or empty search term!", 400)
+		return
+	}
 
 	var ourResponse SentimentResponse
 
@@ -122,12 +128,18 @@ func sentiment_search_reddit(w http.ResponseWriter, r *http.Request) {
 	responseData, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, err.Error(), 400)
+		return
 	}
 	err = json.Unmarshal(responseData, &s)
 	if err != nil {
 		http.Error(w, err.Error(), 400)
+		return
 	}
 	search_term := s.Search_Term
+	if search_term == "" {
+		http.Error(w, "No search term key or empty search term!", 400)
+		return
+	}
 
 	var ourResponse SentimentResponse
 
@@ -187,12 +199,18 @@ func trending_search(w http.ResponseWriter, r *http.Request) {
 	responseData, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, err.Error(), 400)
+		return
 	}
 	err = json.Unmarshal(responseData, &s)
 	if err != nil {
 		http.Error(w, err.Error(), 400)
+		return
 	}
 	search_term := s.Search_Term
+	if search_term == "" {
+		http.Error(w, "No search term key or empty search term!", 400)
+		return
+	}
 
 	related_terms := sentiment.Related(search_term)
 
