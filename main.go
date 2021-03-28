@@ -10,6 +10,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"sync"
 
 	wordcloud "internet-thoughts/python"
 	//"internet-thoughts/reddit"
@@ -71,23 +72,36 @@ func sentiment_search_twitter(w http.ResponseWriter, r *http.Request) {
 	//	docs = append(docs, r.Body)
 	//}
 
+	wg := &sync.WaitGroup{}
 	// Send to sentiment
-	ourResponse.Sentimeter, ourResponse.Sentiment_Breakdown = sentiment.CheckSentiment(docs)
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		ourResponse.Sentimeter, ourResponse.Sentiment_Breakdown = sentiment.CheckSentiment(docs)
+	}()
 
 	// Send to emotions
-	ourResponse.Emotions = sentiment.CheckEmotion(docs)
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		ourResponse.Emotions = sentiment.CheckEmotion(docs)
+	}()
 
 	//wordCloud
 	fullString := strings.Join(docs, "")
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		cloudWords := wordcloud.WordCloud(fullString)
+		for i := 0; i < len(cloudWords); i++ {
+			var tmp wordcloud.Word_Cloud
+			tmp.Word = cloudWords[i][0]
+			tmp.Count, _ = strconv.Atoi(cloudWords[i][1])
+			ourResponse.Word_Cloud = append(ourResponse.Word_Cloud, tmp)
+		}
+	}()
 
-	cloudWords := wordcloud.WordCloud(fullString)
-	for i := 0; i < len(cloudWords); i++ {
-		var tmp wordcloud.Word_Cloud
-		tmp.Word = cloudWords[i][0]
-		tmp.Count, _ = strconv.Atoi(cloudWords[i][1])
-		ourResponse.Word_Cloud = append(ourResponse.Word_Cloud, tmp)
-	}
-
+	wg.Wait()
 	//HotBuzz
 	ourResponse.Buzz_List = twitter.Twitter_Most(twitterData, s.Popular_Count)
 
@@ -118,23 +132,36 @@ func sentiment_search_reddit(w http.ResponseWriter, r *http.Request) {
 		docs = append(docs, r.Body)
 	}
 
+	wg := &sync.WaitGroup{}
 	// Send to sentiment
-	ourResponse.Sentimeter, ourResponse.Sentiment_Breakdown = sentiment.CheckSentiment(docs)
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		ourResponse.Sentimeter, ourResponse.Sentiment_Breakdown = sentiment.CheckSentiment(docs)
+	}()
 
 	// Send to emotions
-	ourResponse.Emotions = sentiment.CheckEmotion(docs)
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		ourResponse.Emotions = sentiment.CheckEmotion(docs)
+	}()
 
 	//wordCloud
 	fullString := strings.Join(docs, "")
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		cloudWords := wordcloud.WordCloud(fullString)
+		for i := 0; i < len(cloudWords); i++ {
+			var tmp wordcloud.Word_Cloud
+			tmp.Word = cloudWords[i][0]
+			tmp.Count, _ = strconv.Atoi(cloudWords[i][1])
+			ourResponse.Word_Cloud = append(ourResponse.Word_Cloud, tmp)
+		}
+	}()
 
-	cloudWords := wordcloud.WordCloud(fullString)
-	for i := 0; i < len(cloudWords); i++ {
-		var tmp wordcloud.Word_Cloud
-		tmp.Word = cloudWords[i][0]
-		tmp.Count, _ = strconv.Atoi(cloudWords[i][1])
-		ourResponse.Word_Cloud = append(ourResponse.Word_Cloud, tmp)
-	}
-
+	wg.Wait()
 	//HotBuzz
 	ourResponse.Buzz_List = reddit.Reddit_Most(redditResponses, s.Popular_Count)
 
