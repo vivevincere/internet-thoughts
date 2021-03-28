@@ -288,12 +288,12 @@ func Reddit_Most(comments []Comment, n int) []sentiment.Buzz {
 	})
 	for i := 0; i < n; i++ {
 		var tmp sentiment.Buzz
-		tmp.Text = comments[i].Body
-		tmp.Comment_Count = comments[i].RepliesCount
+		// tmp.Text = comments[i].Body
+		// tmp.Comment_Count = comments[i].RepliesCount
 		// tmp.Retweet_Count = comments[i].Public_Metrics.Retweet_Count
-		tmp.Upvote_Count = comments[i].Ups
-		tmp.Url = comments[i].CommentLink
-		tmp.User = comments[i].UserHandle
+		// tmp.Upvote_Count = comments[i].Ups
+		tmp.Id = comments[i].CommentLink
+		// tmp.User = comments[i].UserHandle
 		x = append(x, tmp)
 
 	}
