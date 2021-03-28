@@ -42,6 +42,10 @@ type TrendingResponse struct {
 
 //Sentiment + emotion
 func sentiment_search_twitter(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
 	var s Sentiment_API
 
 	responseData, err := ioutil.ReadAll(r.Body)
@@ -123,6 +127,10 @@ func sentiment_search_twitter(w http.ResponseWriter, r *http.Request) {
 }
 
 func sentiment_search_reddit(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
 	var s Sentiment_API
 
 	responseData, err := ioutil.ReadAll(r.Body)
@@ -195,6 +203,10 @@ func sentiment_search_reddit(w http.ResponseWriter, r *http.Request) {
 }
 
 func trending_search(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
 	var s Sentiment_API
 	responseData, err := ioutil.ReadAll(r.Body)
 	if err != nil {

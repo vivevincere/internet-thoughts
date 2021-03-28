@@ -6,10 +6,6 @@ import googleapiclient.discovery
 
 
 
-api_service_name = "youtube"
-api_version = "v3"
-DEVELOPER_KEY = "AIzaSyCtOaqMVQasejuYBG6S2uIp-mGzlZ2YYqM"
-
 
 #given a searchTerm, returns a list of videoIDs
 def searchForVideos(searchTerm, language,numberOfVideos):

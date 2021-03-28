@@ -6,6 +6,7 @@ wordcloud.txt
 # API Keys
 gkey.json
 reddit.json
+twitter.json
 praw.ini
 
 # mac

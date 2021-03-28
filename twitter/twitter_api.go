@@ -15,6 +15,10 @@ type TwitterMain struct {
 	Data []Data `json:"data"`
 }
 
+type TwitterCreds struct {
+	Auth string `json:"Authorization"`
+}
+
 type Meta struct {
 	Next_token string `json:"next_token"`
 }
@@ -32,6 +36,7 @@ type Public_Metrics struct {
 }
 
 func TwitterCall(searchTerm string, location string, numberOfTweets int) []TwitterMain {
+	creds, _ := getTwitterCreds()
 
 	var retList []TwitterMain
 	client := &http.Client{}
@@ -47,7 +52,8 @@ func TwitterCall(searchTerm string, location string, numberOfTweets int) []Twitt
 			url += "&next_token=" + nextToken
 		}
 		req, _ := http.NewRequest("GET", url, nil)
-		req.Header.Set("Authorization", "Bearer AAAAAAAAAAAAAAAAAAAAAJDDNwEAAAAAvR58LgY1daTewd2C4htoRLLBxO4%3D2gqj5PSlNfMOnrSVwX8La6FNsBj6Rc5vJRbH81tWqkoLS4Lcej")
+
+		req.Header.Set("Authorization", creds.Auth)
 
 		resp, _ := client.Do(req)
 		responseData, _ := ioutil.ReadAll(resp.Body)
@@ -59,6 +65,21 @@ func TwitterCall(searchTerm string, location string, numberOfTweets int) []Twitt
 
 	}
 	return retList
+}
+
+func getTwitterCreds() (*TwitterCreds, error) {
+	data, err := ioutil.ReadFile("twitter.json")
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+	var creds TwitterCreds
+	err = json.Unmarshal(data, &creds)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+	return &creds, nil
 }
 
 func Twitter_Most(data_arr []Data, n int) []sentiment.Buzz {

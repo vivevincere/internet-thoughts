@@ -2,7 +2,7 @@ import requests
 import os
 import json
 
-bearerToken = "AAAAAAAAAAAAAAAAAAAAAJDDNwEAAAAAvR58LgY1daTewd2C4htoRLLBxO4%3D2gqj5PSlNfMOnrSVwX8La6FNsBj6Rc5vJRbH81tWqkoLS4Lcej"
+bearerToken = ""
 
 
 
