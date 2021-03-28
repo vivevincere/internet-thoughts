@@ -73,6 +73,7 @@ func CheckSentiment(docs []string) (Sentimeter, []Sentiment) {
 	for sentiClass, score := range sentimentMap {
 		sentiments = append(sentiments, Sentiment{sentiClass, score})
 	}
+
 	return sentimeter, sentiments
 }
 

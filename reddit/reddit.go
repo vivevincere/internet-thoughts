@@ -119,7 +119,7 @@ func GetReddit(query string) []Comment {
 	augmentReq := setUpCreds(auth, creds)
 	client := &http.Client{}
 
-	req, err := http.NewRequest("GET", fmt.Sprintf("https://oauth.reddit.com/search?q=%s", query), nil)
+	req, err := http.NewRequest("GET", fmt.Sprintf("https://oauth.reddit.com/search?q=%s", url.QueryEscape(query)), nil)
 	augmentReq(req)
 
 	resp, err := client.Do(req)
@@ -290,9 +290,9 @@ func Reddit_Most(comments []Comment, n int) []sentiment.Buzz {
 	keys := make(map[string]bool)
 
 	for i := 0; i < n; i++ {
-		if _, value := keys[data_arr[i].Id]; !value{
+		if _, value := keys[comments[i].CommentLink]; !value{
 
-		keys[data_arr[i].Id] = true
+		keys[comments[i].CommentLink] = true
 		var tmp sentiment.Buzz
 		tmp.Id = comments[i].CommentLink
 		x = append(x, tmp)

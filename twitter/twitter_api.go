@@ -2,12 +2,12 @@ package twitter
 
 import (
 	"io/ioutil"
-	//"log"
 	"encoding/json"
 	"fmt"
 	"internet-thoughts/sentiment"
 	"net/http"
 	"sort"
+	"net/url"
 )
 
 type TwitterMain struct {
@@ -46,12 +46,13 @@ func TwitterCall(searchTerm string, location string, numberOfTweets int) []Twitt
 		if numberOfTweets < 100 {
 			curNum = numberOfTweets
 		}
-
-		url := fmt.Sprintf("https://api.twitter.com/2/tweets/search/recent?query=%s&tweet.fields=geo,public_metrics&place.fields=country,name&max_results=%d", searchTerm, curNum)
+		
+		searchTerm = url.QueryEscape(searchTerm)
+		searchUrl := fmt.Sprintf("https://api.twitter.com/2/tweets/search/recent?query=%s&tweet.fields=geo,public_metrics&place.fields=country,name&max_results=%d", searchTerm, curNum)
 		if nextToken != "" {
-			url += "&next_token=" + nextToken
+			searchUrl += "&next_token=" + nextToken
 		}
-		req, _ := http.NewRequest("GET", url, nil)
+		req, _ := http.NewRequest("GET", searchUrl, nil)
 
 		req.Header.Set("Authorization", creds.Auth)
 
