@@ -34,7 +34,7 @@ func languageTextClassificationPredict(ctx context.Context, client *automl.Predi
 	// content := "text to classify"
 
 	req := &automlpb.PredictRequest{
-		Name: fmt.Sprintf("projects/%s/locations/%s/models/%s", "331721144440", "global", "TCN3138332190870339584"),
+		Name: fmt.Sprintf("projects/%s/locations/%s/models/%s", "331721144440", "us-central1", "TCN910635321333383168"),
 		Payload: &automlpb.ExamplePayload{
 			Payload: &automlpb.ExamplePayload_TextSnippet{
 				TextSnippet: &automlpb.TextSnippet{
