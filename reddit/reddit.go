@@ -286,16 +286,21 @@ func Reddit_Most(comments []Comment, n int) []sentiment.Buzz {
 	sort.Slice(comments, func(i, j int) bool {
 		return comments[i].Ups > comments[j].Ups
 	})
-	for i := 0; i < n; i++ {
-		var tmp sentiment.Buzz
-		// tmp.Text = comments[i].Body
-		// tmp.Comment_Count = comments[i].RepliesCount
-		// tmp.Retweet_Count = comments[i].Public_Metrics.Retweet_Count
-		// tmp.Upvote_Count = comments[i].Ups
-		tmp.Id = comments[i].CommentLink
-		// tmp.User = comments[i].UserHandle
-		x = append(x, tmp)
 
+	keys := make(map[string]bool)
+
+	for i := 0; i < n; i++ {
+		if _, value := keys[data_arr[i].Id]; !value{
+
+		keys[data_arr[i].Id] = true
+		var tmp sentiment.Buzz
+		tmp.Id = comments[i].CommentLink
+		x = append(x, tmp)
+	} else{
+		n+= 1
+		}
 	}
+
+	
 	return x
 }

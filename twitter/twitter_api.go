@@ -87,10 +87,19 @@ func Twitter_Most(data_arr []Data, n int) []sentiment.Buzz {
 	sort.Slice(data_arr, func(i, j int) bool {
 		return data_arr[i].Public_Metrics.Retweet_Count > data_arr[j].Public_Metrics.Retweet_Count
 	})
+
+	keys := make(map[string]bool)
+
 	for i := 0; i < n; i++ {
+		if _, value := keys[data_arr[i].Id]; !value{
+
+		keys[data_arr[i].Id] = true
 		var tmp sentiment.Buzz
 		tmp.Id = data_arr[i].Id
 		x = append(x, tmp)
+	} else{
+		n+= 1
+	}
 
 	}
 	return x
