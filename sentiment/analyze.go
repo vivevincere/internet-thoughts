@@ -177,7 +177,7 @@ func analyzeMultipleSentiments(ctx context.Context, client *language.Client, doc
 			score, class := getSentiment(senti.DocumentSentiment)
 			lock.Lock()
 			sm[class] += 1
-			totScore += score
+			totScore += utils.Scale(score)
 			lock.Unlock()
 			succeed = 1
 			// tot_score += score
@@ -189,8 +189,8 @@ func analyzeMultipleSentiments(ctx context.Context, client *language.Client, doc
 	}
 	// fmt.Printf("%+v", sm)
 	// fmt.Printf("%.2f", totScore/float32(len(docs)))
-
-	return Sentimeter{utils.Scale(totScore), totSucceed}, sm
+	log.Printf("%f\n", totScore)
+	return Sentimeter{totScore, totSucceed}, sm
 }
 
 func getSentiment(sentiment *languagepb.Sentiment) (score float32, class string) {

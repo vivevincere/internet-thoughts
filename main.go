@@ -44,8 +44,14 @@ type TrendingResponse struct {
 func sentiment_search_twitter(w http.ResponseWriter, r *http.Request) {
 	var s Sentiment_API
 
-	responseData, _ := ioutil.ReadAll(r.Body)
-	json.Unmarshal(responseData, &s)
+	responseData, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+	}
+	err = json.Unmarshal(responseData, &s)
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+	}
 	search_term := s.Search_Term
 
 	var ourResponse SentimentResponse
@@ -113,8 +119,14 @@ func sentiment_search_twitter(w http.ResponseWriter, r *http.Request) {
 func sentiment_search_reddit(w http.ResponseWriter, r *http.Request) {
 	var s Sentiment_API
 
-	responseData, _ := ioutil.ReadAll(r.Body)
-	json.Unmarshal(responseData, &s)
+	responseData, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+	}
+	err = json.Unmarshal(responseData, &s)
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+	}
 	search_term := s.Search_Term
 
 	var ourResponse SentimentResponse
@@ -172,8 +184,14 @@ func sentiment_search_reddit(w http.ResponseWriter, r *http.Request) {
 
 func trending_search(w http.ResponseWriter, r *http.Request) {
 	var s Sentiment_API
-	responseData, _ := ioutil.ReadAll(r.Body)
-	json.Unmarshal(responseData, &s)
+	responseData, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+	}
+	err = json.Unmarshal(responseData, &s)
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+	}
 	search_term := s.Search_Term
 
 	related_terms := sentiment.Related(search_term)
