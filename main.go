@@ -241,8 +241,8 @@ func trending_search(w http.ResponseWriter, r *http.Request) {
 func main() {
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", homePage)
-	router.HandleFunc("/sentiment_search/twitter", sentiment_search_twitter)
-	router.HandleFunc("/sentiment_search/reddit", sentiment_search_reddit)
-	router.HandleFunc("/trending", trending_search)
+	router.HandleFunc("/sentiment_search/twitter", sentiment_search_twitter).Methods("POST", "OPTIONS")
+	router.HandleFunc("/sentiment_search/reddit", sentiment_search_reddit).Methods("POST", "OPTIONS")
+	router.HandleFunc("/trending", trending_search).Methods("POST", "OPTIONS")
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
